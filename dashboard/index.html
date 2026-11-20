@@ -3,13 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Radar: pre-token protocols ranked by implied value</title>
-<meta name="description" content="A radar for protocols with no token on record, ranked by the implied value of a launch, calibrated on the live tokens of the same category.">
+<title>Token Radar — pre-token protocols, ranked by implied value</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<a class="skip" href="#board">Skip to the board</a>
-<main id="board" tabindex="-1" aria-busy="true"></main>
+<header class="topbar">
+  <div class="brand"><span class="dot" aria-hidden="true"></span> Token Radar</div>
+  <div class="topmeta">
+    <span>Snapshot <strong id="asOf">—</strong></span>
+    <span>DefiLlama protocol index</span>
+    <span>radar-2 model</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>40 watchlist protocols, ranked by implied value</h1>
+      <p>The watchlist is the floor: every protocol with at least $50M of TVL and no
+      token on record. The early radar adds 158 pre-token protocols below that
+      floor and above it. Implied value is a model, not a promise.</p>
+    </div>
+    <dl class="hero-stats">
+      <div><dt>Watchlist covered</dt><dd id="statWatchlist">—</dd></div>
+      <div><dt>Pre-token rows scored</dt><dd id="statRows">—</dd></div>
+      <div><dt>Early rows beyond the watchlist</dt><dd id="statEarly">—</dd></div>
+      <div><dt>Live-token protocols set aside</dt><dd id="statLive">—</dd></div>
+    </dl>
+  </section>
+
+  <section class="cards" aria-label="Board totals">
+    <div class="card"><strong id="cardTop">—</strong><span>Highest implied value, rank 1</span></div>
+    <div class="card"><strong id="cardMedian">—</strong><span>Median comps multiple across the board</span></div>
+    <div class="card"><strong id="cardTop10">—</strong><span>Combined implied value of the top 10</span></div>
+    <div class="card"><strong id="cardCats">—</strong><span>Categories on the board</span></div>
+  </section>
+
+  <section class="filters" aria-label="Filter the board">
+    <label class="field grow">Search
+      <input id="search" type="search" placeholder="Search name, category or chain" autocomplete="off">
+    </label>
+    <label class="field">Category
+      <select id="category"><option value="">All categories</option></select>
+    </label>
+    <label class="check"><input id="watchlistOnly" type="checkbox"> Watchlist only</label>
+    <div class="tabs" role="tablist" aria-label="Token status">
+      <button id="tabPre" class="tab on" role="tab" aria-selected="true">Pre-token</button>
+      <button id="tabLive" class="tab" role="tab" aria-selected="false">Live token</button>
+    </div>
+    <span class="count" id="rowCount">—</span>
+  </section>
+
+  <section class="tablewrap">
+    <p class="table-note" id="tableNote">Pre-token protocols, strongest implied value first. Select a row for its model, its comps and its farm plan.</p>
+    <table id="board">
+      <thead>
+        <tr>
+          <th data-sort="rank">Rank</th>
+          <th data-sort="name">Protocol</th>
+          <th data-sort="tvl_usd">TVL</th>
+          <th data-sort="change_7d">7d</th>
+          <th data-sort="age_days">Age</th>
+          <th data-sort="base_multiple">Multiple</th>
+          <th data-sort="implied_value_usd">Implied value</th>
+          <th>Token</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="empty" id="empty" hidden>No protocol matches this filter.</p>
+  </section>
+
+  <section class="livewrap" id="livewrap" hidden>
+    <p class="table-note">Live-token protocols, largest market cap first. These are the priced comps: a token that trades, shown so the line between a launch candidate and a launched token stays visible.</p>
+    <table id="live">
+      <thead>
+        <tr>
+          <th>Protocol</th>
+          <th>Category</th>
+          <th>TVL</th>
+          <th>Market cap</th>
+          <th>Multiple</th>
+          <th>7d</th>
+        </tr>
+      </thead>
+      <tbody id="liveRows"></tbody>
+    </table>
+  </section>
+
+  <footer class="foot">
+    <p><strong>How the number is made.</strong> Each protocol's implied value is its TVL times a
+    comps multiple — the median market-cap / TVL of the live-token protocols in its own
+    category, blended 0.65 / 0.35 with the market-wide median — times a growth factor from
+    its seven-day TVL change and a maturity factor from how long it has run with no token.
+    A category with fewer than three live peers falls back to the market-wide median.
+    The page recomputes every row from those same figures, so what you see is what the
+    board file carries.</p>
+    <p>An implied value is an estimate, not a price. A protocol records no token; that is
+    not proof it has none, and nothing here predicts whether or when a token is issued.</p>
+  </footer>
+</main>
+
+<aside class="drawer" id="drawer" hidden aria-label="Protocol detail">
+  <button class="close" id="drawerClose" type="button">Close</button>
+  <div id="detail"></div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
+
 <script src="../data.js"></script>
 <script src="app.js"></script>
 </body>
